@@ -16,7 +16,6 @@ struct Task: Identifiable{
 struct ContentView: View {
     
     @State private var tasks: [Task] = []
-    @State private var newTaskText: String = ""
     @State private var isChecked: Bool = true
     @State private var taskText: String = ""
     
@@ -60,7 +59,7 @@ struct ContentView: View {
                 Button(action: {
                     addNewTask()
                 }) {
-                    Image(systemName: "plus.square.dashed")
+                    Image(systemName: "plus.viewfinder")
                         .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
                         .font(.title)
                         
@@ -73,10 +72,10 @@ struct ContentView: View {
     
     // Function to add a new task
     private func addNewTask() {
-        guard !newTaskText.isEmpty else { return }  // Ensure the task is not empty
-        let newTask = Task(title: newTaskText, isChecked: false)
+        guard !taskText.isEmpty else { return }  // Ensure the task is not empty
+        let newTask = Task(title: taskText, isChecked: false)
         tasks.append(newTask)
-        newTaskText = ""  // Clear the input field after adding
+        taskText = ""  // Clear the input field after adding
     }
     
 }
