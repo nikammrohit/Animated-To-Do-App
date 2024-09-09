@@ -7,8 +7,16 @@
 
 import SwiftUI
 
+struct Task: Identifiable{
+    let id = UUID()
+    var title: String
+    var isChecked: Bool
+}
+
 struct ContentView: View {
     
+    @State private var tasks: [Task] = []
+    @State private var newTaskText: String = ""
     @State private var isChecked: Bool = true
     @State private var taskText: String = ""
     
@@ -23,7 +31,8 @@ struct ContentView: View {
                Image("headerImage")
                     .resizable()
                     .scaledToFit()
-                    .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                    .edgesIgnoringSafeArea(.all)
+                
                 
                 HStack{
                     //checkmark button
@@ -33,32 +42,43 @@ struct ContentView: View {
                         Image(systemName: isChecked ? "checkmark.square" : "checkmark.square.fill")
                             .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
                             .font(.title2)
-                            .position(x: 40, y:-20)
+                            .position(x: 40, y:-25)
                     }
                     .buttonStyle(PlainButtonStyle())
                     
-                    
-                    Text(taskText.isEmpty ? "Task" : taskText)
-                            .foregroundColor(.white)
-                            .strikethrough(!isChecked, color: .white)
-                            .animation(.easeInOut, value: isChecked)
-                            .position(x: -35, y:-20)
-                    
+                    Spacer()
                     
                     TextField("Task", text: $taskText)
                         .foregroundColor(.white)
-                        .position(x: -35, y:-20)
-                        .opacity(0)
+                        .strikethrough(!isChecked, color: .white)
+                        .animation(.easeInOut, value: isChecked)
+                        .position(x: -35, y:-25)
                     
                         
                 }
                 
-                //
+                Button(action: {
+                    addNewTask()
+                }) {
+                    Image(systemName: "plus.square.dashed")
+                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                        .font(.title)
+                        
+                }
                 
             }
             
         }
     }
+    
+    // Function to add a new task
+    private func addNewTask() {
+        guard !newTaskText.isEmpty else { return }  // Ensure the task is not empty
+        let newTask = Task(title: newTaskText, isChecked: false)
+        tasks.append(newTask)
+        newTaskText = ""  // Clear the input field after adding
+    }
+    
 }
 
 #Preview {
