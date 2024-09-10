@@ -7,6 +7,20 @@
 
 import SwiftUI
 
+struct RoundedCornersShape: Shape {
+    var corners: UIRectCorner
+    var radius: CGFloat
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
 struct Task: Identifiable{
     let id = UUID()
     var title: String
@@ -26,11 +40,22 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
                 
             VStack{
-                //header image
-               Image("headerImage")
-                    .resizable()
-                    .scaledToFit()
-                    .edgesIgnoringSafeArea(.all)
+               
+                ZStack{
+                    //header image
+                   Image("headerImage")
+                        .resizable()
+                        .scaledToFit()
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    
+                    RoundedCornersShape (corners: [.topLeft, .topRight], radius: 20)
+                        .fill(Color(red: 26/255, green: 27/255, blue: 37/255))
+                        .frame(height: 260) // Adjust the height as needed
+                        .offset(y: 260) // Move the rectangle lower by adjusting this value
+        
+                }
+                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 
                 
                 HStack{
