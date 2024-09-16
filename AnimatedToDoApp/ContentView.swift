@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//Defines rect which is below header
 struct RoundedCornersShape: Shape {
     var corners: UIRectCorner
     var radius: CGFloat
@@ -22,64 +23,86 @@ struct RoundedCornersShape: Shape {
 }
 
 struct Task: Identifiable{
-    let id = UUID()
-    var title: String
-    var isChecked: Bool
+    let id = UUID() //unique id for each task
+    var title: String //title of the task
+    var isChecked: Bool //checks if task is checked
 }
 
 struct ContentView: View {
     
-    @State private var tasks: [Task] = []
-    @State private var isChecked: Bool = true
-    @State private var taskText: String = ""
+    @State private var tasks: [Task] = [] //array holds all tasks
+    @State private var isSandwichChecked: Bool = true //if box is checked
+    @State private var taskText: String = "" //holds text for new task input
+    @State private var keyboardHeight: CGFloat = 0 // to store keyboard height
+        
     
     
     var body: some View {
         ZStack{
             Color(red: 26/255, green: 27/255, blue: 37/255)
                 .edgesIgnoringSafeArea(.all)
-                
+            
+            
             VStack{
-               
                 ZStack{
                     //header image
-                   Image("headerImage")
+                    Image("headerImage")
                         .resizable()
                         .scaledToFit()
                         .edgesIgnoringSafeArea(.all)
                     
-                    
+                    //grey rect containing tasks
                     RoundedCornersShape (corners: [.topLeft, .topRight], radius: 20)
                         .fill(Color(red: 26/255, green: 27/255, blue: 37/255))
                         .frame(height: 260) // Adjust the height as needed
                         .offset(y: 260) // Move the rectangle lower by adjusting this value
-        
+                    
+                    Button(action: {
+                        isSandwichChecked.toggle()
+                    }) {
+                        Image(systemName: isSandwichChecked ? "line.3.horizontal.circle" : "line.3.horizontal.decrease.circle.fill")
+                            .foregroundColor(.blue)
+                            .font(.title)
+                            .padding()
+                            .offset(x:-165, y: -70)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
                 }
                 .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 
                 
-                HStack{
-                    //checkmark button
-                    Button(action: {
-                        isChecked.toggle()
-                    }) {
-                        Image(systemName: isChecked ? "checkmark.square" : "checkmark.square.fill")
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                            .font(.title2)
-                            .position(x: 40, y:-25)
+                //scrollable list of tasks
+                ScrollView{
+                    VStack{
+                        ForEach($tasks) {$task in
+                            HStack{
+                                //checkmark button
+                                Button(action: {
+                                    withAnimation(.easeOut(duration: 0.5)) {
+                                        toggleTask(task)
+                                    }
+                                }) {
+                                    Image(systemName: task.isChecked ? "checkmark.square.fill" : "checkmark.square")
+                                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                                        .font(.title2)
+                                        .position(x: 20)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                
+                                Spacer()
+                                
+                                TextField("Task", text: $task.title)
+                                    .foregroundColor(.white)
+                                    .strikethrough(task.isChecked, color: .white)
+                                    .animation(.easeInOut, value: task.isChecked)
+                                    .position(x: -45) //y:-25
+                            }
+                        }
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    Spacer()
-                    
-                    TextField("Task", text: $taskText)
-                        .foregroundColor(.white)
-                        .strikethrough(!isChecked, color: .white)
-                        .animation(.easeInOut, value: isChecked)
-                        .position(x: -35, y:-25)
-                    
-                        
+                    .padding(10)
                 }
+                .offset(y:-65)
                 
                 Button(action: {
                     addNewTask()
@@ -87,20 +110,36 @@ struct ContentView: View {
                     Image(systemName: "plus.viewfinder")
                         .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
                         .font(.title)
-                        
+                    
                 }
-                
+                .padding(.bottom, keyboardHeight) // Adjust for keyboard height
             }
             
         }
     }
     
+    // Function to toggle the task's check state and remove it if checked
+    private func toggleTask(_ task: Task) {
+        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+            // Toggle the task's checked state
+            tasks[index].isChecked.toggle()
+            
+            // If the task is now checked, remove it with animation
+            if tasks[index].isChecked {
+                // Animate the removal of the task
+                withAnimation(.easeOut(duration: 0.5)) {
+                    tasks.remove(at: index)
+                }
+            }
+        }
+    }
+
+    
     // Function to add a new task
     private func addNewTask() {
-        guard !taskText.isEmpty else { return }  // Ensure the task is not empty
         let newTask = Task(title: taskText, isChecked: false)
         tasks.append(newTask)
-        taskText = ""  // Clear the input field after adding
+        taskText = ""
     }
     
 }
