@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+// Defines a method to dismiss the keyboard
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
 
 //Defines rect which is below header
 struct RoundedCornersShape: Shape {
@@ -35,7 +41,6 @@ struct ContentView: View {
     @State private var tasks: [Task] = [] //array holds all tasks
     @State private var isSandwichChecked: Bool = true //if box is checked
     @State private var taskText: String = "" //holds text for new task input
-        
     
     var body: some View {
         ZStack{
@@ -113,6 +118,9 @@ struct ContentView: View {
                 }
             }
             
+        }// Detect taps outside the text field to dismiss the keyboard
+        .onTapGesture {
+            UIApplication.shared.endEditing() // Dismisses the keyboard
         }
         .ignoresSafeArea(.keyboard)
     }
