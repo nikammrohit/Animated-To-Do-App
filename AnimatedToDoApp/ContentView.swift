@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 //Defines rect which is below header
 struct RoundedCornersShape: Shape {
     var corners: UIRectCorner
@@ -28,20 +29,18 @@ struct Task: Identifiable{
     var isChecked: Bool //checks if task is checked
 }
 
+
 struct ContentView: View {
     
     @State private var tasks: [Task] = [] //array holds all tasks
     @State private var isSandwichChecked: Bool = true //if box is checked
     @State private var taskText: String = "" //holds text for new task input
-    @State private var keyboardHeight: CGFloat = 0 // to store keyboard height
         
-    
     
     var body: some View {
         ZStack{
             Color(red: 26/255, green: 27/255, blue: 37/255)
                 .edgesIgnoringSafeArea(.all)
-            
             
             VStack{
                 ZStack{
@@ -112,7 +111,6 @@ struct ContentView: View {
                         .font(.title)
                     
                 }
-                .padding(.bottom, keyboardHeight) // Adjust for keyboard height
             }
             
         }
