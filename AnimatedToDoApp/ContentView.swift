@@ -116,7 +116,9 @@ struct ContentView: View {
             }
             
         }
+        .ignoresSafeArea(.keyboard)
     }
+
     
     // Function to toggle the task's check state and remove it if checked
     private func toggleTask(_ task: Task) {
